@@ -21,19 +21,19 @@ import java.util.Objects;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 /**
- * A REST entity representing a legume.
+ * A REST entity representing a CreditCard.
  */
 @RegisterForReflection // Lets Quarkus register this class for reflection during the native build
-public class Legume {
+public class CreditCard {
     private String name;
-    private String description;
+    private String number;
 
-    public Legume() {
+    public CreditCard() {
     }
 
-    public Legume(String name, String description) {
+    public CreditCard(String name, String number) {
         this.name = name;
-        this.description = description;
+        this.number = number;
     }
 
     public String getName() {
@@ -44,21 +44,21 @@ public class Legume {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getNumber() {
+        return number;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Legume)) {
+        if (!(obj instanceof CreditCard)) {
             return false;
         }
 
-        Legume other = (Legume) obj;
+        CreditCard other = (CreditCard) obj;
 
         return Objects.equals(other.name, this.name);
     }

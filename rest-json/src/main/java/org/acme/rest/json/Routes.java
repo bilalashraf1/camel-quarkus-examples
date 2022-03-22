@@ -1,19 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.acme.rest.json;
 
 import java.util.Collections;
@@ -27,18 +11,13 @@ import org.apache.camel.model.rest.RestBindingMode;
  * Camel route definitions.
  */
 public class Routes extends RouteBuilder {
-    private final Set<Fruit> fruits = Collections.synchronizedSet(new LinkedHashSet<>());
-    private final Set<Legume> legumes = Collections.synchronizedSet(new LinkedHashSet<>());
-
+    private final Set<CreditCard> ccList = Collections.synchronizedSet(new LinkedHashSet<>());
+  
     public Routes() {
 
-        /* Let's add some initial fruits */
-        this.fruits.add(new Fruit("Apple", "Winter fruit"));
-        this.fruits.add(new Fruit("Pineapple", "Tropical fruit"));
-
-        /* Let's add some initial legumes */
-        this.legumes.add(new Legume("Carrot", "Root vegetable, usually orange"));
-        this.legumes.add(new Legume("Zucchini", "Summer squash"));
+        this.ccList.add(new CreditCard("john", "xxxxxxxxxxxx" ));
+        this.ccList.add(new CreditCard("smith", "xxxxxxxxxxxx" ));
+        this.ccList.add(new CreditCard("mike", "xxxxxxxxxxxx" ));
     }
 
     @Override
@@ -46,23 +25,36 @@ public class Routes extends RouteBuilder {
 
         restConfiguration().bindingMode(RestBindingMode.json);
 
-        rest("/fruits")
+        rest("/creditcard")
                 .get()
                 .route()
-                .setBody().constant(fruits)
+                .log("${body}")
+                //.process() //validate thru bean/process
+                //.marshal() //covert to third party acceptable instance
+                // perform business logic
+                //jdbc data source
+                .setBody().constant(ccList) // set the body to be passed to third party
                 .endRest()
 
                 .post()
-                .type(Fruit.class)
+                .type(CreditCard.class)
                 .route()
-                .process().body(Fruit.class, fruits::add)
-                .setBody().constant(fruits)
+                //.process() //validate
+                   //jdbc data source
+                //.marshal() //covert to entity
+                // perform business logic
+                .process().body(CreditCard.class, ccList::add)
+                .setBody().constant(ccList)
+                //emial
+                //sms
                 .endRest();
 
-        rest("/legumes")
-                .get()
-                .route()
-                .setBody().constant(legumes)
-                .endRest();
+        from("kamelet:chuck-norris-source")
+        .log("${body}");
+        // rest("/restendpoint")
+        //         .get()
+        //         .route()
+        //         .setBody().constant(entity)
+        //         .endRest();
     }
 }

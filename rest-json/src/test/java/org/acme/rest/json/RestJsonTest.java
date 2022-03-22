@@ -30,41 +30,30 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 public class RestJsonTest {
 
     @Test
-    public void fruits() {
+    public void ccList() {
 
         /* Assert the initial fruits are there */
         given()
-                .when().get("/fruits")
-                .then()
-                .statusCode(200)
-                .body(
-                        "$.size()", is(2),
-                        "name", containsInAnyOrder("Apple", "Pineapple"),
-                        "description", containsInAnyOrder("Winter fruit", "Tropical fruit"));
-
-        /* Add a new fruit */
-        given()
-                .body("{\"name\": \"Pear\", \"description\": \"Winter fruit\"}")
-                .header("Content-Type", "application/json")
-                .when()
-                .post("/fruits")
+                .when().get("/creditcard/list")
                 .then()
                 .statusCode(200)
                 .body(
                         "$.size()", is(3),
-                        "name", containsInAnyOrder("Apple", "Pineapple", "Pear"),
-                        "description", containsInAnyOrder("Winter fruit", "Tropical fruit", "Winter fruit"));
-    }
+                        "name", containsInAnyOrder("john", "smith", "mike"));
 
-    @Test
-    public void legumes() {
+        /* Add a new fruit */
         given()
-                .when().get("/legumes")
+                .body("{\"name\": \"wiz\", \"number\": \"xxxxxxxxxx\"}")
+                .header("Content-Type", "application/json")
+                .when()
+                .post("/creditcard")
                 .then()
                 .statusCode(200)
-                .body("$.size()", is(2),
-                        "name", containsInAnyOrder("Carrot", "Zucchini"),
-                        "description", containsInAnyOrder("Root vegetable, usually orange", "Summer squash"));
+                .body(
+                        "$.size()", is(4),
+                        "name", containsInAnyOrder("john", "smith", "mike", "wiz"));
     }
+
+
 
 }

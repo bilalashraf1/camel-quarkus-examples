@@ -24,5 +24,6 @@ public class MyRoute extends RouteBuilder {
     public void configure() {
         from("kamelet:chuck-norris-source")
                 .log("${body}");
+                
     }
 }
